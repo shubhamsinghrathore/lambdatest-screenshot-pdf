@@ -15,6 +15,7 @@ A CLI tool that:
 - ✅ Supports PNG, JPG, and JPEG images
 - ✅ Allows specifying an **output directory**
 - ✅ Secure authentication using `AUTH_HEADER`
+- ✅ Generates uniquely named files per session (`screenshots_<session_id>.pdf`)
 
 ## Installation
 
@@ -25,7 +26,7 @@ npm install -g lambdatest-screenshot-pdf
 
 To use it locally:
 ```sh
-git clone https://github.com/your-repo/lambdatest-screenshot-pdf.git
+git clone https://github.com/shubhamsinghrathore/lambdatest-screenshot-pdf.git
 cd lambdatest-screenshot-pdf
 npm install
 ```
@@ -39,20 +40,23 @@ AUTH_HEADER="Basic your_encoded_auth_string" lambdatest-screenshot-pdf <session_
 
 ### Example:
 ```sh
-AUTH_HEADER="Basic cmF0aG9yZXNodWIyMjpPd0x2aTYxUDNxRXgybXprNjVKcXUyMmtZM1dCdFlXTm5LclZPeVRRQ01RRGdyNTZjVg==" lambdatest-screenshot-pdf 1a80510a-289a-46b7-9f60-da01d108de10 --output ~/Desktop/screenshots
+AUTH_HEADER="Basic cmF0aG9yZXNodWIyMjpPaTYxUDNxRXgybXprNKcXUyMmtZM1dCdFlXTm5LclZPeVRRQ01RRGdyNTZjVg==" lambdatest-screenshot-pdf 1a80510a-289a-46b7-9f60-da01d108de10 --output ~/Desktop/screenshots
 ```
+
+
 
 ### What happens when you run the command?
 1. Fetches the ZIP download URL for the session ID.
 2. Downloads the ZIP file.
-3. Extracts the screenshots into a `screenshots/` folder.
-4. Generates a `screenshots.pdf` with all images in order.
+3. Extracts the screenshots into `screenshots_<session_id>/`.
+4. Generates a uniquely named `screenshots_<session_id>.pdf` with all images in order.
 5. Cleans up temporary files.
 
 ## Output
 After execution, you will get:
-- `screenshots/` (Extracted images)
-- `screenshots.pdf` (Final merged PDF file)
+- `screenshots_<session_id>.zip` (Downloaded ZIP file)
+- `screenshots_<session_id>/` (Extracted images)
+- `screenshots_<session_id>.pdf` (Final merged PDF file)
 
 ## Error Handling
 This tool handles:

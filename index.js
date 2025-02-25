@@ -46,7 +46,7 @@ async function fetchScreenshotZip(sessionId, authHeader) {
 
     if (!response.data?.url) throw new Error("Screenshot ZIP URL not found.");
 
-    const zipPath = path.join(process.cwd(), "screenshots.zip");
+    const zipPath = path.join(process.cwd(), `screenshots_${sessionId}.zip`);
     const writer = fs.createWriteStream(zipPath);
 
     console.log(`⬇️  Downloading ZIP file...`);
@@ -72,11 +72,11 @@ async function fetchScreenshotZip(sessionId, authHeader) {
   }
 }
 
-async function extractScreenshots(zipPath) {
+async function extractScreenshots(zipPath, sessionId) {
   try {
     if (!fs.existsSync(zipPath)) throw new Error("ZIP file not found.");
 
-    const extractPath = path.join(process.cwd(), "screenshots");
+    const extractPath = path.join(process.cwd(), `screenshots_${sessionId}`);
     fs.ensureDirSync(extractPath);
 
     console.log("📂 Extracting screenshots...");
@@ -90,10 +90,10 @@ async function extractScreenshots(zipPath) {
   }
 }
 
-async function createPdfFromScreenshots(folderPath, outputDir) {
+async function createPdfFromScreenshots(folderPath, outputDir, sessionId) {
   try {
     fs.ensureDirSync(outputDir);
-    const pdfPath = path.join(outputDir, "screenshots.pdf");
+    const pdfPath = path.join(outputDir, `screenshots_${sessionId}.pdf`);  // ✅ Now correctly naming PDF
 
     console.log(`📄 Generating PDF at: ${pdfPath}`);
 
@@ -143,8 +143,11 @@ async function main() {
 
   try {
     const zipPath = await fetchScreenshotZip(sessionId, authHeader);
-    const extractedFolder = await extractScreenshots(zipPath);
-    await createPdfFromScreenshots(extractedFolder, outputDir);
+    const extractedFolder = await extractScreenshots(zipPath, sessionId);
+    
+    // ✅ Corrected function call to include `sessionId`
+    await createPdfFromScreenshots(extractedFolder, outputDir, sessionId);  
+    
     await cleanup(zipPath);
 
     console.log("\n🎉 All tasks completed successfully! Your PDF is ready. 🚀\n");
